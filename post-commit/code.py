@@ -13,12 +13,12 @@ print(
         So it works like a multi-line
         comment, but it will print out.
 
-        ***I AM SAYING IT IS FANTASTIC***
+        **********KEEP ROCKING!!***
 
         ======================
         |                    |
         |                    |
-        |   UGOCHUKWU!!      |
+        |   MEMPHIS- MEMPHIS |
         |                    |
         |                    |
         =====================
