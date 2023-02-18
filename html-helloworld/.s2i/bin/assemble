@@ -2,11 +2,11 @@
 
 echo "Before Assembling..."
 
-ls -alrt /tmp/src
+#ls -alrt /tmp/src
 
-chmod -R 775 /tmp/src
+#chmod -R 775 /tmp/src
 
-ls -alrt /tmp/src
+#ls -alrt /tmp/src
 
 echo "Built today --> " $(date '+%Y-%m-%d') >> /tmp/src/index.html
 
@@ -16,16 +16,3 @@ cp -Rv /tmp/src/src/* /tmp/src/
 
 echo "Fantastic Pages =============GOING!==========" >> /tmp/src/info.html
 
-#echo 
-#/usr/libexec/s2i/assemble
-#cp -Rv /tmp/src/src/* /tmp/src/
-#ls /tmp/src/
-#rc=$?
-
-#if [ $rc -eq 0 ]; then
-#	echo "After successful assembling"
-#else
-#	echo "After failed assembling"
-#fi
-
-#exit $rc
