@@ -2,15 +2,24 @@
 
 echo "Before Assembling..."
 
+echo "Built today --> " $(date '+%Y-%m-%d') >> index.html
+
+echo "Copying..."
+
+cp -Rv /tmp/src/src/* ./
+
+echo "Fantastic Pages =============GOING!==========" >> info.html
+
+#echo 
 #/usr/libexec/s2i/assemble
-#cp -Rv /tmp/src/* ./
-ls /tmp/src/
-rc=$?
+#cp -Rv /tmp/src/src/* /tmp/src/
+#ls /tmp/src/
+#rc=$?
 
-if [ $rc -eq 0 ]; then
-	echo "After successful assembling"
-else
-	echo "After failed assembling"
-fi
+#if [ $rc -eq 0 ]; then
+#	echo "After successful assembling"
+#else
+#	echo "After failed assembling"
+#fi
 
-exit $rc
+#exit $rc
