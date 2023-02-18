@@ -4,15 +4,15 @@ echo "Before Assembling..."
 
 ls -alrt /tmp/src
 
-chmod -R 777 /tmp/src
+#chmod -R 777 /tmp/src
 
-echo "Built today --> " $(date '+%Y-%m-%d') >> index.html
+su 1001 -c echo "Built today --> " $(date '+%Y-%m-%d') >> index.html
 
 echo "Copying..."
 
 cp -Rv /tmp/src/src/* /tmp/src/
 
-echo "Fantastic Pages =============GOING!==========" >> info.html
+su 1001 -c echo "Fantastic Pages =============GOING!==========" >> info.html
 
 #echo 
 #/usr/libexec/s2i/assemble
