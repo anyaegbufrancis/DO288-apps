@@ -2,6 +2,8 @@
 
 echo "Before Assembling..."
 
+ls -alrt /tmp/src
+
 chmod -R 777 /tmp/src
 
 echo "Built today --> " $(date '+%Y-%m-%d') >> index.html
