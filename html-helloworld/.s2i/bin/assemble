@@ -1,6 +1,8 @@
 #! /bin/bash
 
 echo "-------------Starting-----------"
-
+tree .
+ls -alrt
+du -a
 cp -Rv src/* ./
 
