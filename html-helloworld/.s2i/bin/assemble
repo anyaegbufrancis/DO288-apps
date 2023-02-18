@@ -3,7 +3,7 @@
 echo "Before Assembling..."
 
 #/usr/libexec/s2i/assemble
-cp -Rv /tmp/src ./
+cp -Rv /tmp/src/* ./
 
 rc=$?
 
