@@ -8,13 +8,13 @@ chmod -R 775 /tmp/src
 
 ls -alrt /tmp/src
 
-echo "Built today --> " $(date '+%Y-%m-%d') >> index.html
+echo "Built today --> " $(date '+%Y-%m-%d') >> /tmp/src/index.html
 
 echo "Copying..."
 
 cp -Rv /tmp/src/src/* /tmp/src/
 
-echo "Fantastic Pages =============GOING!==========" >> info.html
+echo "Fantastic Pages =============GOING!==========" >> /tmp/src/info.html
 
 #echo 
 #/usr/libexec/s2i/assemble
