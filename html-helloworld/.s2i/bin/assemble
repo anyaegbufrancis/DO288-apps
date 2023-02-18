@@ -4,7 +4,9 @@ echo "Before Assembling..."
 
 ls -alrt /tmp/src
 
-chmod -R 1001:1001 /tmp/src
+chmod -R 775 /tmp/src
+
+ls -alrt /tmp/src
 
 echo "Built today --> " $(date '+%Y-%m-%d') >> index.html
 
