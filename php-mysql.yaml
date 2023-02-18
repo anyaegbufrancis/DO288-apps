@@ -1,0 +1,253 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: quotes-api
+      template: php-mysql-ephemeral
+    name: quotes-api
+  stringData:
+    database-password: mypa55
+    database-user: user1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Exposes and load balances the application pods
+      openshift.io/generated-by: OpenShiftNewApp
+      service.alpha.openshift.io/dependencies: '[{"name": "quotesdb", "kind": "Service"}]'
+    creationTimestamp: null
+    labels:
+      app: quotes-api
+      template: php-mysql-ephemeral
+    name: quotes-api
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      targetPort: 8080
+    selector:
+      app: quotes-api
+  status:
+    loadBalancer: {}
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+      template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
+    creationTimestamp: null
+    labels:
+      app: quotes-api
+      template: php-mysql-ephemeral
+    name: quotes-api
+  spec:
+    host: quotes-api-non-istio-tests.apps.cluster-zwcd8.zwcd8.sandbox306.opentlc.com
+    to:
+      kind: Service
+      name: quotes-api
+      weight: null
+  status: {}
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      description: Keeps track of changes in the application image
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: quotes-api
+      template: php-mysql-ephemeral
+    name: quotes-api
+  spec:
+    lookupPolicy:
+      local: true
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      description: Defines how to build the application
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: quotes-api
+      template: php-mysql-ephemeral
+    name: quotes-api
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: quotes-api:latest
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: quotes
+      git:
+        uri: https://github.com/anyaegbufrancis/DO288-apps
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: php:7.4-ubi8
+          namespace: openshift
+      type: Source
+    triggers:
+    - type: ImageChange
+    - type: ConfigChange
+    - github:
+        secret: K4GmJynn3M7HPHLvw2u3jqHjH3vSgn8Vu67XICy7
+      type: GitHub
+  status:
+    lastVersion: 0
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      description: Defines how to deploy the PHP application
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: quotes-api
+      template: php-mysql-ephemeral
+    name: quotes-api
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: quotes-api
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: quotes-api
+        name: quotes-api
+      spec:
+        containers:
+        - env:
+          - name: DATABASE_SERVICE_NAME
+            value: quotesdb
+          - name: DATABASE_NAME
+            value: phpapp
+          - name: DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: quotes-api
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: quotes-api
+          image: quotes-api:latest
+          name: php-app
+          ports:
+          - containerPort: 8080
+          resources: {}
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Exposes the database server
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: quotesdb
+      template: php-mysql-ephemeral
+    name: quotesdb
+  spec:
+    ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+    selector:
+      app: quotesdb
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      description: Defines how to deploy the database
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: quotesdb
+      template: php-mysql-ephemeral
+    name: quotesdb
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: quotesdb
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: quotesdb
+        name: quotesdb
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: quotes-api
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: quotes-api
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: quotes-api
+          - name: MYSQL_DATABASE
+            value: phpapp
+          image: image-registry.openshift-image-registry.svc:5000/openshift/mysql:8.0-el8
+          livenessProbe:
+            initialDelaySeconds: 30
+            tcpSocket:
+              port: 3306
+            timeoutSeconds: 1
+          name: mysql
+          ports:
+          - containerPort: 3306
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -i
+              - -c
+              - MYSQL_PWD='mypa55' mysql -h 127.0.0.1 -u user1 -D phpapp -e 'SELECT
+                1'
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          resources: {}
+          volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: data
+        volumes:
+        - emptyDir: {}
+          name: data
+  status: {}
+kind: List
+metadata: {}
