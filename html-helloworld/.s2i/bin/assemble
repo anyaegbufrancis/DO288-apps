@@ -10,3 +10,9 @@ cp -Rv /tmp/src/src/* /tmp/src/
 
 echo "Fantastic Pages =============GOING!==========" >> /tmp/src/info.html
 
+echo "Moving all files to serving directory"
+
+cp -v /tmp/src/*.html /var/www/html
+
+echo "***************Configuration completed today: "$(date '+%Y-%m-%d')" ***************"
+
