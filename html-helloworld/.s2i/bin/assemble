@@ -2,6 +2,10 @@
 
 echo "Before Assembling..."
 
+chmod +rwx index.html
+chmod +rwx /tmp/src/src/info.html
+chmod +rwx /tmp/src/src/data.html
+
 echo "Built today --> " $(date '+%Y-%m-%d') >> index.html
 
 echo "Copying..."
